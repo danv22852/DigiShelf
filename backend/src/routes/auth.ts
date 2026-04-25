@@ -5,7 +5,7 @@ import {
   login,
   forgotPassword,
   resetPassword
-} from '../controllers/authController.js';
+} from '../controllers/authController';
 
 const router = Router();
 

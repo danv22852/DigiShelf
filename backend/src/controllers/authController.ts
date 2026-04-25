@@ -2,8 +2,8 @@ import { Request, Response } from 'express';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
-import User from '../models/User.js';
-import { sendVerificationEmail, sendPasswordResetEmail } from '../config/mailer.js';
+import User from '../models/User';
+import { sendVerificationEmail, sendPasswordResetEmail } from '../config/mailer';
 
 export const register = async (req: Request, res: Response): Promise<void> => {
   try {
