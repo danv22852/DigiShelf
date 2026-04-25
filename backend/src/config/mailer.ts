@@ -1,7 +1,9 @@
 import nodemailer from 'nodemailer';
+import dotenv from 'dotenv'; 
+dotenv.config();
 
 const transporter = nodemailer.createTransport({
-  service: 'Gmail',
+  service: 'gmail',
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS
@@ -9,6 +11,7 @@ const transporter = nodemailer.createTransport({
 });
 
 export const sendVerificationEmail = async (to: string, token: string): Promise<void> => {
+  try {
   const url = `${process.env.CLIENT_URL}/verify-email/${token}`;
   await transporter.sendMail({
     from: `"DigiShelf" <${process.env.EMAIL_USER}>`,
@@ -20,6 +23,10 @@ export const sendVerificationEmail = async (to: string, token: string): Promise<
       <a href="${url}">${url}</a>
     `
   });
+  console.log("Sent");
+} catch (error){
+  console.error("Error sending email:", error);
+}
 };
 
 export const sendPasswordResetEmail = async (to: string, token: string): Promise<void> => {

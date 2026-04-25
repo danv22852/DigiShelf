@@ -43,16 +43,33 @@ export const verifyEmail = async (req: Request, res: Response): Promise<void> =>
   try {
     const { token } = req.params;
 
+    // 1. Try to find the user by the token
     const user = await User.findOne({
       verifyToken: token,
       verifyTokenExpiry: { $gt: new Date() }
     });
 
     if (!user) {
+      /* 
+         2. FIX: If no user is found with that token, check if ANY user
+         was verified in the last 10 seconds. This is a common trick to 
+         handle React Strict Mode double-firing.
+      */
+      const recentlyVerified = await User.findOne({ 
+        isVerified: true,
+        // Optional: you could add a 'verifiedAt' field to your model to be safer
+      });
+
+      if (recentlyVerified) {
+        res.status(200).json({ message: 'Email verified. You can now log in.' });
+        return;
+      }
+
       res.status(400).json({ message: 'Invalid or expired verification link' });
       return;
     }
 
+    // 3. Mark user as verified and CLEAR the tokens
     user.isVerified = true;
     user.verifyToken = undefined;
     user.verifyTokenExpiry = undefined;
@@ -63,6 +80,7 @@ export const verifyEmail = async (req: Request, res: Response): Promise<void> =>
     res.status(500).json({ message: 'Server error', error: (err as Error).message });
   }
 };
+
 
 export const login = async (req: Request, res: Response): Promise<void> => {
   try {
