@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "rootDir": "./src",
+    "outDir": "./dist",
+
+    "module": "CommonJS",
+    "moduleResolution": "Node",
+
+    "target": "ES2022",
+
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+
+    "ignoreDeprecations": "6.0",
+    "strict": true,
+    "skipLibCheck": true,
+
+    "types": ["node"]
+  }
+}
