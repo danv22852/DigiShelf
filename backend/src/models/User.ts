@@ -11,6 +11,7 @@ export interface IBook {
   pageCount?: number;
   publishedDate?: string;
   genre?: string;
+  color?: string;
   userRating?: number;
   userReview?: string;
   addedAt: Date;
@@ -52,6 +53,7 @@ const BookSchema = new Schema<IBook>({
   pageCount:     { type: Number },
   publishedDate: { type: String },
   genre:         { type: String },
+  color:         { type: String },
   userRating:    { type: Number, min: 1, max: 5 },
   userReview:    { type: String },
   addedAt:       { type: Date, default: Date.now },
