@@ -25,10 +25,15 @@ export const register = async (req: Request, res: Response): Promise<void> => {
       verifyToken,
       verifyTokenExpiry,
       isVerified: false,
-      bookshelves: [
-        { category: 'Read',         color: '#4CAF50', books: [] },
-        { category: 'Reading',      color: '#2196F3', books: [] },
-        { category: 'Want to Read', color: '#FF9800', books: [] }
+      bookcases: [
+        {
+          name: 'My Bookcase',
+          shelves: [
+            { category: 'Read', color: '#4CAF50', books: [] },
+            { category: 'Reading', color: '#2196F3', books: [] },
+            { category: 'Want to Read', color: '#FF9800', books: [] }
+          ]
+        }
       ]
     });
 

@@ -12,11 +12,17 @@ export interface IBook {
   addedAt: Date;
 }
 
-export interface IBookshelf {
+export interface IShelf {
   _id?: mongoose.Types.ObjectId;
   category: string;
   color: string;
   books: IBook[];
+}
+
+export interface IBookcase {
+  _id?: mongoose.Types.ObjectId;
+  name: string;
+  shelves: IShelf[];
 }
 
 export interface IUser extends Document {
@@ -27,7 +33,7 @@ export interface IUser extends Document {
   verifyTokenExpiry?: Date;
   resetToken?: string;
   resetTokenExpiry?: Date;
-  bookshelves: IBookshelf[];
+  bookcases: IBookcase[];
   createdAt: Date;
 }
 
@@ -42,10 +48,15 @@ const BookSchema = new Schema<IBook>({
   addedAt:     { type: Date, default: Date.now }
 });
 
-const BookshelfSchema = new Schema<IBookshelf>({
+const ShelfSchema = new Schema<IShelf>({
   category: { type: String, required: true },
   color:    { type: String, default: '#4A90D9' },
   books:    [BookSchema]
+});
+
+const BookcaseSchema = new Schema<IBookcase>({
+  name:   { type: String, required: true },
+  shelves: [ShelfSchema]
 });
 
 const UserSchema = new Schema<IUser>({
@@ -56,7 +67,7 @@ const UserSchema = new Schema<IUser>({
   verifyTokenExpiry: { type: Date },
   resetToken:        { type: String },
   resetTokenExpiry:  { type: Date },
-  bookshelves:       [BookshelfSchema],
+  bookcases:         [BookcaseSchema],
   createdAt:         { type: Date, default: Date.now }
 });
 
