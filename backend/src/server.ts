@@ -12,7 +12,7 @@ const app = express();
 const CLIENT_URL = process.env.CLIENT_URL;
 
 app.use(cors({
-  origin: ["http://localhost:5173", CLIENT_URL].filter(Boolean) as string[],
+  origin: ["http://localhost:5173", "https://digishelf.xyz"],
   credentials: true
 }));
 
