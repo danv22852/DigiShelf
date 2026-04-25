@@ -1,11 +1,42 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState } from 'react'; // 1. Added useState
+import { Link, useNavigate } from 'react-router-dom'; // 2. Added useNavigate
 import { ArrowLeft } from 'lucide-react';
 
 const Login: React.FC = () => {
+  // 3. Create states for inputs and messages
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState<string | null>(null);
+  const navigate = useNavigate();
+
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError(null);
+
+    try {
+      const response = await fetch('http://localhost:3000/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        // 4. Store the JWT token and redirect to dashboard
+        localStorage.setItem('token', data.token);
+        navigate('/dashboard'); // Change this to wherever your user goes after login
+      } else {
+        // This will catch "Invalid credentials" or "Please verify email"
+        setError(data.message || 'Login failed');
+      }
+    } catch (err) {
+      setError('Cannot connect to server. Is the backend running?');
+    }
+  };
+
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-orange-50 p-4">
-      
       <Link to="/" className="absolute top-8 left-8 flex items-center gap-2 text-gray-500 hover:text-black transition-colors">
         <ArrowLeft size={20} />
         <span className="font-medium">Back to Home</span>
@@ -14,17 +45,38 @@ const Login: React.FC = () => {
       <div className="w-full max-w-md bg-white/80 backdrop-blur-sm p-8 rounded-2xl shadow-xl border border-orange-100">
         <h2 className="text-3xl font-black text-gray-900 mb-6">Welcome Back! 👋</h2>
         
-        <form className="space-y-4">
+        {/* 5. Show error message if login fails */}
+        {error && (
+          <div className="mb-4 p-3 rounded-lg bg-red-100 text-red-700 text-sm font-medium">
+            {error}
+          </div>
+        )}
+        
+        <form onSubmit={handleLogin} className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
-            <input type="email" className="w-full px-4 py-3 rounded-lg bg-white border border-gray-200 focus:ring-2 focus:ring-black focus:border-transparent outline-none transition-all" placeholder="you@example.com" />
+            <input 
+              type="email" 
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full px-4 py-3 rounded-lg bg-white border border-gray-200 focus:ring-2 focus:ring-black outline-none transition-all" 
+              placeholder="you@example.com" 
+              required
+            />
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
-            <input type="password" className="w-full px-4 py-3 rounded-lg bg-white border border-gray-200 focus:ring-2 focus:ring-black focus:border-transparent outline-none transition-all" placeholder="••••••••" />
+            <input 
+              type="password" 
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full px-4 py-3 rounded-lg bg-white border border-gray-200 focus:ring-2 focus:ring-black outline-none transition-all" 
+              placeholder="••••••••" 
+              required
+            />
           </div>
           
-          <button className="w-full bg-black text-white font-bold py-3 rounded-lg hover:bg-gray-800 transition-transform active:scale-95">
+          <button type="submit" className="w-full bg-black text-white font-bold py-3 rounded-lg hover:bg-gray-800 transition-transform active:scale-95">
             Log In
           </button>
         </form>
