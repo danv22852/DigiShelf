@@ -35,6 +35,8 @@ const createBook = (): Book => ({
   id: Math.random().toString(36).substr(2, 9),
   color: BOOK_COLORS[Math.floor(Math.random() * BOOK_COLORS.length)],
   height: ['120px', '145px', '110px', '132px', '125px'][Math.floor(Math.random() * 5)],
+  title: "",
+  author: ""
 });
 
 const Dashboard: React.FC = () => {
