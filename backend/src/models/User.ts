@@ -23,23 +23,31 @@ export interface IShelf {
   category: string;
   color: string;
   books: IBook[];
+  shareToken?: string;       // ← unique token for sharing
+  isShared?: boolean;         // ← whether shelf is publicly shared
 }
 
 export interface IBookcase {
   _id?: mongoose.Types.ObjectId;
   name: string;
   shelves: IShelf[];
+  isPublic?: boolean;         // ← public/private toggle
 }
 
 export interface IUser extends Document {
   email: string;
   password: string;
+  displayName?: string;      // ← profile
+  bio?: string;              // ← profile
+  profilePicture?: string;   // ← profile (URL)
   isVerified: boolean;
   verifyToken?: string;
   verifyTokenExpiry?: Date;
   resetToken?: string;
   resetTokenExpiry?: Date;
   bookcases: IBookcase[];
+  followers: mongoose.Types.ObjectId[];   // ← users following this user
+  following: mongoose.Types.ObjectId[];   // ← users this user follows
   createdAt: Date;
 }
 
@@ -61,26 +69,34 @@ const BookSchema = new Schema<IBook>({
 });
 
 const ShelfSchema = new Schema<IShelf>({
-  category: { type: String, required: true },
-  color:    { type: String, default: '#4A90D9' },
-  books:    [BookSchema]
+  category:   { type: String, required: true },
+  color:      { type: String, default: '#4A90D9' },
+  books:      [BookSchema],
+  shareToken: { type: String, default: null },
+  isShared:   { type: Boolean, default: false }
 });
 
 const BookcaseSchema = new Schema<IBookcase>({
-  name:    { type: String, required: true },
-  shelves: [ShelfSchema]
+  name:     { type: String, required: true },
+  shelves:  [ShelfSchema],
+  isPublic: { type: Boolean, default: false }
 });
 
 const UserSchema = new Schema<IUser>({
-  email:             { type: String, required: true, unique: true, lowercase: true },
-  password:          { type: String, required: true },
-  isVerified:        { type: Boolean, default: false },
-  verifyToken:       { type: String },
+  email:          { type: String, required: true, unique: true, lowercase: true },
+  password:       { type: String, required: true },
+  displayName:    { type: String },
+  bio:            { type: String },
+  profilePicture: { type: String },
+  isVerified:     { type: Boolean, default: false },
+  verifyToken:    { type: String },
   verifyTokenExpiry: { type: Date },
-  resetToken:        { type: String },
+  resetToken:     { type: String },
   resetTokenExpiry:  { type: Date },
-  bookcases:         [BookcaseSchema],
-  createdAt:         { type: Date, default: Date.now }
+  bookcases:      [BookcaseSchema],
+  followers:      [{ type: Schema.Types.ObjectId, ref: 'User' }],
+  following:      [{ type: Schema.Types.ObjectId, ref: 'User' }],
+  createdAt:      { type: Date, default: Date.now }
 });
 
 export default mongoose.model<IUser>('User', UserSchema);
