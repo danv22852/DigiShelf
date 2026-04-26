@@ -9,24 +9,24 @@ import bookcaseRoutes from './routes/bookcase';
 import shelfRoutes from './routes/shelf';
 import customizationRoutes from './routes/customization';
 import searchRoutes from './routes/search';
+import profileRoutes from './routes/profile';
+import socialRoutes from './routes/social';
+import moveBookRoutes from './routes/moveBook';
 
 connectDB();
 
 const app = express();
-const CLIENT_URL = process.env.CLIENT_URL;
-
-app.use(cors({
-  origin: ["http://localhost:5173", "https://digishelf.xyz"],
-  credentials: true
-}));
-
+app.use(cors({ origin: process.env.CLIENT_URL }));
 app.use(express.json());
 
-app.use('/api/auth',                         authRoutes);
-app.use('/api/bookcase',                     bookcaseRoutes);
-app.use('/api/bookcase/:bookcaseId/shelves', shelfRoutes);
-app.use('/api/bookcase/:bookcaseId/shelves', customizationRoutes);
-app.use('/api/bookcase/:bookcaseId/shelves', searchRoutes);
+app.use('/api/auth',                                              authRoutes);
+app.use('/api/profile',                                           profileRoutes);
+app.use('/api/social',                                            socialRoutes);
+app.use('/api/bookcase',                                          bookcaseRoutes);
+app.use('/api/bookcase/:bookcaseId/shelves',                      shelfRoutes);
+app.use('/api/bookcase/:bookcaseId/shelves',                      customizationRoutes);
+app.use('/api/bookcase/:bookcaseId/shelves',                      searchRoutes);
+app.use('/api/bookcase/:bookcaseId/shelves/:shelfId/books',       moveBookRoutes);
 
 app.listen(Number(process.env.PORT) || 3000, () =>
   console.log(`Server running on port ${process.env.PORT || 3000}`)
