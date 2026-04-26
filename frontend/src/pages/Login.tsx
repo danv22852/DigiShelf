@@ -1,11 +1,14 @@
 import React, { useState } from 'react'; // 1. Added useState
 import { Link, useNavigate } from 'react-router-dom'; // 2. Added useNavigate
 import { ArrowLeft } from 'lucide-react';
+import { Eye, EyeOff } from 'lucide-react';
+
 
 const Login: React.FC = () => {
   // 3. Create states for inputs and messages
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false); // New state for visibility
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
 
@@ -66,16 +69,24 @@ const Login: React.FC = () => {
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
+            <div className="relative">
             <input 
-              type="password" 
+              type={showPassword ? "text" : "password"} 
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="w-full px-4 py-3 rounded-lg bg-white border border-gray-200 focus:ring-2 focus:ring-black outline-none transition-all" 
               placeholder="••••••••" 
               required
             />
+            <button 
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-900 transition-colors"
+              >
+                {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+              </button>
           </div>
-          
+        </div>
           <button type="submit" className="w-full bg-black text-white font-bold py-3 rounded-lg hover:bg-gray-800 transition-transform active:scale-95">
             Log In
           </button>
