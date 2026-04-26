@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ChevronLeft, ChevronRight, Plus, LogOut, Trash2, Edit3, X, Check, Settings } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Plus, LogOut, Trash2, Edit3, X, Check } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 // --- TYPES ---
@@ -14,7 +14,6 @@ type Book = {
 
 type Shelf = Book[];
 
-<<<<<<< HEAD
 const MAX_BOOKS_PER_SHELF = 18; // Increased slightly for better density
 const BOOK_COLORS = [
   '#FFD580', // Grey
@@ -30,12 +29,8 @@ const BOOK_COLORS = [
 ];
 
 
-=======
-const CATEGORIES = ['Reading', 'To Read', 'Completed'];
-const MAX_BOOKS_PER_SHELF = 18;
-const BOOK_COLORS = ['#8D6E63', '#5D4037', '#795548', '#A1887F', '#6D4C41', '#3E2723', '#2E7D32', '#1565C0', '#C62828', '#F9A825'];
->>>>>>> 203ce6d (Added dark mode)
 
+// --- HELPER: Generate a random book ---
 const createBook = (): Book => ({
   id: Math.random().toString(36).substr(2, 9),
   color: BOOK_COLORS[Math.floor(Math.random() * BOOK_COLORS.length)],
@@ -49,7 +44,6 @@ const Dashboard: React.FC = () => {
   const [direction, setDirection] = useState(0);
   const [editingShelf, setEditingShelf] = useState<{ category: string; index: number } | null>(null);
 
-<<<<<<< HEAD
   const [categories, setCategories] = useState<string[]>(() => {
   const saved = localStorage.getItem('bookshelf_category_names');
   return saved ? JSON.parse(saved) : ['Reading', 'To Read', 'Completed'];
@@ -64,18 +58,19 @@ const Dashboard: React.FC = () => {
 
 
   // --- STATE MANAGEMENT ---
-=======
->>>>>>> 203ce6d (Added dark mode)
   const [activeTab, setActiveTab] = useState<number>(() => {
     const saved = localStorage.getItem('active_bookshelf_tab');
     return saved ? parseInt(saved, 10) : 0;
   });
 
+  // Refactored State: Stores ARRAYS of Books, not just numbers
   const [collections, setCollections] = useState<{ [key: string]: Shelf[] }>(() => {
     const saved = localStorage.getItem('my_bookshelves_v2');
     if (saved) return JSON.parse(saved);
+    
+    // Default starter data
     return {
-      'Reading': [[createBook(), createBook(), createBook()]],
+      'Reading': [[createBook(), createBook(), createBook()]], 
       'To Read': [[]],
       'Completed': [[]]
     };
@@ -91,6 +86,8 @@ const Dashboard: React.FC = () => {
 
   const activeCategory = categories[activeTab];
   const currentShelves = collections[activeCategory];
+
+  // --- ACTIONS ---
 
   const changeTab = (newDirection: number) => {
     setDirection(newDirection);
@@ -126,6 +123,7 @@ const Dashboard: React.FC = () => {
 
   const deleteShelfLayer = (index: number) => {
     if (currentShelves.length <= 1) {
+      // If it's the last shelf, just clear it instead of deleting the layer
       const updated = [...currentShelves];
       updated[index] = [];
       setCollections(prev => ({ ...prev, [activeCategory]: updated }));
@@ -135,6 +133,8 @@ const Dashboard: React.FC = () => {
     setCollections(prev => ({ ...prev, [activeCategory]: updated }));
   };
 
+  // --- MODAL ACTIONS (Passed down to the Edit Modal) ---
+  
   const updateShelf = (category: string, shelfIndex: number, newBooks: Book[]) => {
     setCollections(prev => {
       const newShelves = [...prev[category]];
@@ -150,26 +150,18 @@ const Dashboard: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#FDFCF0] dark:bg-[#1f1f1f] p-8 flex flex-col items-center font-sans relative overflow-x-hidden transition-colors duration-300">
-
+    <div className="min-h-screen bg-[#FDFCF0] p-8 flex flex-col items-center font-sans relative overflow-x-hidden">
+      
       {/* Top Controls */}
-      <button
+      <button 
         onClick={() => { localStorage.removeItem('token'); navigate('/login'); }}
         className="absolute top-6 left-6 flex items-center gap-2 text-stone-400 hover:text-red-500 transition-colors font-bold text-sm uppercase tracking-widest"
       >
         <LogOut size={18} /> Logout
       </button>
 
-      <button
-        onClick={() => navigate('/settings')}
-        className="absolute top-6 right-6 flex items-center gap-2 text-stone-400 hover:text-stone-800 dark:hover:text-white transition-colors font-bold text-sm uppercase tracking-widest"
-      >
-        <Settings size={18} />
-      </button>
-
       {/* Header */}
       <div className="max-w-4xl w-full flex justify-between items-center mb-10 z-10">
-<<<<<<< HEAD
         <button onClick={() => changeTab(-1)} className="p-2 hover:bg-stone-200/50 rounded-full transition-all"><ChevronLeft size={40}/></button>
 <div className="text-center min-w-[300px]">
   {isEditingTitle ? (
@@ -200,11 +192,6 @@ const Dashboard: React.FC = () => {
   )}
 </div>
         <button onClick={() => changeTab(1)} className="p-2 hover:bg-stone-200/50 rounded-full transition-all"><ChevronRight size={40}/></button>
-=======
-        <button onClick={() => changeTab(-1)} className="p-2 hover:bg-stone-200/50 dark:hover:bg-white/10 rounded-full transition-all"><ChevronLeft size={40} className="text-stone-800 dark:text-white" /></button>
-        <h1 className="text-5xl font-black text-stone-800 dark:text-white tracking-tighter">{activeCategory}</h1>
-        <button onClick={() => changeTab(1)} className="p-2 hover:bg-stone-200/50 dark:hover:bg-white/10 rounded-full transition-all"><ChevronRight size={40} className="text-stone-800 dark:text-white" /></button>
->>>>>>> 203ce6d (Added dark mode)
       </div>
 
       {/* Bookshelf Display */}
@@ -222,24 +209,20 @@ const Dashboard: React.FC = () => {
           >
             <div className="bg-[#4E342E] p-10 px-0 min-h-[550px] shadow-inner relative">
               <div className="absolute inset-0 bg-gradient-to-b from-black/20 to-transparent pointer-events-none h-12" />
-
+              
               {currentShelves.map((shelfBooks, index) => (
-<<<<<<< HEAD
                 <div key={index} className="mb-12 flex items-end w-full min-h-[150px] relative group/shelf border-b-[12px] border-[#3E2723]">
                   
                   {/* Shelf Action Buttons (Visible on Hover) */}
-=======
-                <div key={index} className="mb-12 border-b-[12px] border-[#3E2723] flex items-end px-6 pb-0 min-h-[150px] relative group/shelf">
->>>>>>> 203ce6d (Added dark mode)
                   <div className="absolute -right-6 top-0 flex flex-col gap-2 opacity-0 group-hover/shelf:opacity-100 transition-all z-20">
-                    <button
+                    <button 
                       onClick={() => setEditingShelf({ category: activeCategory, index })}
                       className="p-2 bg-white/10 hover:bg-blue-500 text-white rounded-full shadow-md backdrop-blur-sm transition-colors"
                       title="Edit Shelf"
                     >
                       <Edit3 size={16} />
                     </button>
-                    <button
+                    <button 
                       onClick={() => deleteShelfLayer(index)}
                       className="p-2 bg-white/10 hover:bg-red-500 text-white rounded-full shadow-md backdrop-blur-sm transition-colors"
                       title="Delete Layer"
@@ -248,7 +231,6 @@ const Dashboard: React.FC = () => {
                     </button>
                   </div>
 
-<<<<<<< HEAD
                   {/* Render Books */}
                     {shelfBooks.map((book) => (
                     <motion.div 
@@ -260,14 +242,6 @@ const Dashboard: React.FC = () => {
                         backgroundColor: book.color,
                         transform: `rotate(${(parseInt(book.id, 36) % 3) - 1.5}deg)`
                         }}
-=======
-                  {shelfBooks.map((book) => (
-                    <motion.div
-                      key={book.id}
-                      layoutId={book.id}
-                      className="w-11 mx-[1px] rounded-t-sm shadow-md border-l border-white/10 relative group/book"
-                      style={{ height: book.height, backgroundColor: book.color }}
->>>>>>> 203ce6d (Added dark mode)
                     >
                         {/* --- SPINE TEXT --- */}
                         <span 
@@ -287,6 +261,7 @@ const Dashboard: React.FC = () => {
                     ))}
 
 
+                  {/* Empty State Hint */}
                   {shelfBooks.length === 0 && (
                     <div className="w-full h-full flex items-center justify-center text-white/10 text-sm font-medium italic">
                       Empty Shelf
@@ -294,7 +269,7 @@ const Dashboard: React.FC = () => {
                   )}
                 </div>
               ))}
-
+              
               <button onClick={addShelfLayer} className="w-full mt-6 py-3 border-2 border-dashed border-white/10 text-[#A1887F] hover:text-white hover:border-white/30 hover:bg-white/5 text-xs uppercase font-bold tracking-[0.2em] rounded-lg transition-all">
                 + Add New Layer
               </button>
@@ -304,10 +279,10 @@ const Dashboard: React.FC = () => {
         <div className="h-10 bg-[#5D4037] w-[calc(100%+8px)] -ml-1 rounded-b-xl shadow-2xl border-t-2 border-black/20" />
       </div>
 
-      {/* Edit Modal */}
+      {/* --- EDIT MODAL --- */}
       <AnimatePresence>
         {editingShelf && (
-          <EditShelfModal
+          <EditShelfModal 
             category={editingShelf.category}
             shelfIndex={editingShelf.index}
             books={collections[editingShelf.category][editingShelf.index]}
@@ -319,6 +294,7 @@ const Dashboard: React.FC = () => {
           />
         )}
       </AnimatePresence>
+
     </div>
   );
 };
@@ -354,29 +330,30 @@ const EditShelfModal: React.FC<{
 
 
   return (
-    <motion.div
+    <motion.div 
       initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
       className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4"
     >
-      <motion.div
+      <motion.div 
         initial={{ scale: 0.9, y: 20 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.9, y: 20 }}
-        className="bg-white dark:bg-[#2a2a2a] rounded-2xl shadow-2xl w-full max-w-2xl overflow-hidden flex flex-col max-h-[90vh]"
+        className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl overflow-hidden flex flex-col max-h-[90vh]"
       >
         {/* Modal Header */}
-        <div className="px-8 py-6 border-b border-gray-100 dark:border-[#3a3a3a] flex justify-between items-center bg-gray-50 dark:bg-[#222]">
+        <div className="px-8 py-6 border-b border-gray-100 flex justify-between items-center bg-gray-50">
           <div>
-            <h2 className="text-2xl font-black text-gray-800 dark:text-white">Edit Shelf Layer {shelfIndex + 1}</h2>
-            <p className="text-sm text-gray-500 dark:text-[#666] font-medium uppercase tracking-wider">{category} Collection</p>
+            <h2 className="text-2xl font-black text-gray-800">Edit Shelf Layer {shelfIndex + 1}</h2>
+            <p className="text-sm text-gray-500 font-medium uppercase tracking-wider">{category} Collection</p>
           </div>
-          <button onClick={onClose} className="p-2 hover:bg-gray-200 dark:hover:bg-white/10 rounded-full transition-colors text-gray-500 dark:text-[#666]">
+          <button onClick={onClose} className="p-2 hover:bg-gray-200 rounded-full transition-colors text-gray-500">
             <X size={24} />
           </button>
         </div>
 
-        {/* Modal Content */}
+        {/* Modal Content: Scrollable List */}
         <div className="p-8 overflow-y-auto flex-1">
+          
+          {/* Visual Shelf Preview */}
           <div className="mb-8 p-6 bg-[#4E342E] rounded-lg flex items-end justify-center min-h-[160px] shadow-inner border-b-8 border-[#3E2723]">
-<<<<<<< HEAD
              {tempBooks.map((book) => (
                 <div 
                   key={book.id}
@@ -386,31 +363,19 @@ const EditShelfModal: React.FC<{
               ))}
 
               {tempBooks.length === 0 && <span className="text-white/20 text-sm">Empty Shelf Preview</span>}
-=======
-            {tempBooks.map((book) => (
-              <div
-                key={book.id}
-                className="w-10 mx-[1px] rounded-t-sm shadow-lg border-l border-white/10"
-                style={{ height: book.height, backgroundColor: book.color }}
-              />
-            ))}
-            {tempBooks.length === 0 && <span className="text-white/20 text-sm">Empty Shelf Preview</span>}
->>>>>>> 203ce6d (Added dark mode)
           </div>
 
-          <h3 className="text-sm font-bold text-gray-400 dark:text-[#555] uppercase tracking-wider mb-4">
-            Manage Books ({tempBooks.length}/{MAX_BOOKS_PER_SHELF})
-          </h3>
-
+          <h3 className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-4">Manage Books ({tempBooks.length}/{MAX_BOOKS_PER_SHELF})</h3>
+          
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {tempBooks.map((book, i) => (
-              <div key={book.id} className="flex items-center gap-4 p-3 border border-gray-100 dark:border-[#3a3a3a] rounded-xl hover:border-blue-100 dark:hover:border-blue-900 hover:bg-blue-50/30 dark:hover:bg-blue-950/20 transition-all group">
+              <div key={book.id} className="flex items-center gap-4 p-3 border border-gray-100 rounded-xl hover:border-blue-100 hover:bg-blue-50/30 transition-all group">
+                {/* Book Color Picker */}
                 <div className="relative group/picker">
-                  <div
+                  <div 
                     className="w-10 h-14 rounded shadow-sm border-l-2 border-black/5 cursor-pointer hover:scale-105 transition-transform"
                     style={{ backgroundColor: book.color }}
                   />
-<<<<<<< HEAD
                     <div className="flex-1 flex flex-col gap-1">
                 <input 
                     type="text" 
@@ -438,13 +403,6 @@ const EditShelfModal: React.FC<{
                             e.stopPropagation();
                             changeColor(book.id, c);
                                                 }}
-=======
-                  <div className="absolute top-full left-0 mt-2 bg-white dark:bg-[#2a2a2a] p-2 rounded-lg shadow-xl border border-gray-100 dark:border-[#3a3a3a] grid grid-cols-5 gap-1 w-40 opacity-0 group-hover/picker:opacity-100 pointer-events-none group-hover/picker:pointer-events-auto z-10 transition-opacity">
-                    {BOOK_COLORS.map(c => (
-                      <button
-                        key={c}
-                        onClick={() => changeColor(book.id, c)}
->>>>>>> 203ce6d (Added dark mode)
                         className="w-6 h-6 rounded-full border border-black/10 hover:scale-110 transition-transform"
                         style={{ backgroundColor: c }}
                       />
@@ -453,23 +411,24 @@ const EditShelfModal: React.FC<{
                 </div>
 
                 <div className="flex-1">
-                  <p className="text-sm font-bold text-gray-700 dark:text-white">Book #{i + 1}</p>
-                  <p className="text-xs text-gray-400 dark:text-[#555]">Hover cover to change color</p>
+                  <p className="text-sm font-bold text-gray-700">Book #{i + 1}</p>
+                  <p className="text-xs text-gray-400">Hover cover to change color</p>
                 </div>
 
-                <button
+                <button 
                   onClick={() => removeBook(book.id)}
-                  className="p-2 text-gray-300 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-950/20 rounded-lg transition-all"
+                  className="p-2 text-gray-300 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all"
                 >
                   <Trash2 size={18} />
                 </button>
               </div>
             ))}
 
+            {/* Add Button */}
             {tempBooks.length < MAX_BOOKS_PER_SHELF && (
-              <button
+              <button 
                 onClick={addNewBook}
-                className="flex flex-col items-center justify-center gap-2 p-4 border-2 border-dashed border-gray-200 dark:border-[#3a3a3a] rounded-xl text-gray-400 hover:border-blue-400 hover:text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-950/20 transition-all h-[88px]"
+                className="flex flex-col items-center justify-center gap-2 p-4 border-2 border-dashed border-gray-200 rounded-xl text-gray-400 hover:border-blue-400 hover:text-blue-500 hover:bg-blue-50 transition-all h-[88px]"
               >
                 <Plus size={24} />
                 <span className="text-xs font-bold uppercase">Add Book</span>
@@ -479,11 +438,11 @@ const EditShelfModal: React.FC<{
         </div>
 
         {/* Modal Footer */}
-        <div className="p-6 border-t border-gray-100 dark:border-[#3a3a3a] bg-gray-50 dark:bg-[#222] flex justify-end gap-3">
-          <button onClick={onClose} className="px-6 py-3 text-gray-600 dark:text-[#888] font-bold hover:bg-gray-200 dark:hover:bg-white/10 rounded-xl transition-colors">
+        <div className="p-6 border-t border-gray-100 bg-gray-50 flex justify-end gap-3">
+          <button onClick={onClose} className="px-6 py-3 text-gray-600 font-bold hover:bg-gray-200 rounded-xl transition-colors">
             Cancel
           </button>
-          <button onClick={() => onSave(tempBooks)} className="px-8 py-3 bg-black dark:bg-white text-white dark:text-black font-bold rounded-xl hover:bg-gray-800 dark:hover:bg-gray-200 shadow-lg hover:shadow-xl transition-all flex items-center gap-2">
+          <button onClick={() => onSave(tempBooks)} className="px-8 py-3 bg-black text-white font-bold rounded-xl hover:bg-gray-800 shadow-lg hover:shadow-xl transition-all flex items-center gap-2">
             <Check size={18} /> Save Changes
           </button>
         </div>
