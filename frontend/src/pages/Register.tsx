@@ -1,6 +1,8 @@
 import React, { useState } from 'react'; // Added useState
 import { Link } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
+import { Eye, EyeOff } from 'lucide-react';
+
 
 const Register: React.FC = () => {
   // 1. Create states for the input fields
@@ -8,7 +10,8 @@ const Register: React.FC = () => {
   const [password, setPassword] = useState('');
   const [fullName, setFullName] = useState(''); // Tracking this for later
   const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
-
+  const [showPassword, setShowPassword] = useState(false)
+  ; 
   // 2. The function that talks to your Backend
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -69,6 +72,7 @@ const Register: React.FC = () => {
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+            
             <input 
               type="email" 
               required
@@ -80,15 +84,25 @@ const Register: React.FC = () => {
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
+            <div className = "relative">
             <input 
-              type="password" 
+              type={showPassword ? "text" : "password"}
               required
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="w-full px-4 py-3 rounded-lg bg-white border border-gray-200 focus:ring-2 focus:ring-black outline-none transition-all" 
               placeholder="••••••••" 
             />
+            <button 
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-900 transition-colors"
+              >
+                {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+              </button>
           </div>
+          </div>
+         
           
           <button type="submit" className="w-full bg-black text-white font-bold py-3 rounded-lg hover:bg-gray-800 transition-transform active:scale-95">
             Create Account
