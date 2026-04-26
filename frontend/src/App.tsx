@@ -5,6 +5,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import VerifyEmail from './pages/VerifyEmail';
 import Dashboard from './pages/Dashboard';
+import Settings from './pages/Settings';
 
 const App: React.FC = () => {
   return (
@@ -24,6 +25,8 @@ const App: React.FC = () => {
 
         {/* Future route for Dashboard after login */}
         <Route path="/dashboard" element={<Dashboard />} />
+
+        <Route path="/settings" element={<Settings />} />
       </Routes>
     </Router>
   );

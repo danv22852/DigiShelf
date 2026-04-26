@@ -1,5 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 export default {
+  darkMode: 'class', 
   content: [
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
@@ -7,7 +8,6 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        // This maps the 'font-brand' class to your chosen font
         'brand': ['"SF Pro Display"', '-apple-system', 'sans-serif'],
       },
     },
