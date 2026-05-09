@@ -1,6 +1,6 @@
 import React, { useState } from 'react'; // 1. Added useState
 import { Link, useNavigate } from 'react-router-dom'; // 2. Added useNavigate
-import { ArrowLeft, LeafyGreen } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import { Eye, EyeOff, LoaderCircle } from 'lucide-react';
 
 
