@@ -1,7 +1,7 @@
 import React, { useState } from 'react'; // 1. Added useState
 import { Link, useNavigate } from 'react-router-dom'; // 2. Added useNavigate
-import { ArrowLeft } from 'lucide-react';
-import { Eye, EyeOff } from 'lucide-react';
+import { ArrowLeft, LeafyGreen } from 'lucide-react';
+import { Eye, EyeOff, LoaderCircle } from 'lucide-react';
 
 
 const Login: React.FC = () => {
@@ -9,11 +9,13 @@ const Login: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false); // New state for visibility
+  const [loading, setLoading] = useState(false); // State for loading indicator
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLoading(true);
     setError(null);
 
     try {
@@ -87,9 +89,10 @@ const Login: React.FC = () => {
               </button>
           </div>
         </div>
-          <button type="submit" className="w-full bg-black text-white font-bold py-3 rounded-lg hover:bg-gray-800 transition-transform active:scale-95">
+           {loading ? <LoaderCircle className="animate-spin w-full max-w-md"size={20}color={"#656de2"} /> : <button type="submit" className="w-full bg-black text-white font-bold py-3 rounded-lg hover:bg-gray-800 transition-transform active:scale-95">
             Log In
-          </button>
+          </button>}
+          
         </form>
 
         <p className="mt-6 text-center text-gray-500">
